@@ -28,9 +28,12 @@ class LightbulbViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         lightbulb.alpha = 0
         light.alpha = 0
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         start()
     }
     
@@ -52,13 +55,18 @@ class LightbulbViewController: UIViewController {
                 } else {
                     if let data = magnetometerData {
                         oldValue = newValue
-                        newValue = data.magneticField.z
+                        newValue = -data.magneticField.z
                         deltaValue = abs(oldValue) - abs(newValue)
                         DispatchQueue.main.async {
                             if deltaValue > 6 {
                                 UIView.animate(withDuration: 0.4, animations: {
                                     self.lightbulb.alpha = 1
                                     self.light.alpha = 1
+                                })
+                            } else if deltaValue < 3 {
+                                UIView.animate(withDuration: 0.4, animations: {
+                                    self.lightbulb.alpha = 0
+                                    self.light.alpha = 0
                                 })
                             } else {
                                 UIView.animate(withDuration: 0.4, animations: {
